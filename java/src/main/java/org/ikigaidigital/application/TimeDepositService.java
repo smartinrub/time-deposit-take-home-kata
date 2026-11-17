@@ -35,6 +35,11 @@ public class TimeDepositService {
                 .toList();
     }
 
+    public void updateAllBalances() {
+        // TODO: implement service layer; throws rather than silently doing nothing behind a 204
+        throw new UnsupportedOperationException("Updating balances is not implemented yet");
+    }
+
     private static TimeDepositWithWithdrawals toTimeDepositWithWithdrawals(
             TimeDeposit deposit,
             Map<Integer, List<Withdrawal>> withdrawalsByDepositId

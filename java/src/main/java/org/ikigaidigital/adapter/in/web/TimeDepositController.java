@@ -6,9 +6,8 @@ import org.ikigaidigital.application.TimeDepositService;
 import org.ikigaidigital.application.TimeDepositWithWithdrawals;
 import org.ikigaidigital.domain.TimeDeposit;
 import org.ikigaidigital.domain.Withdrawal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +27,12 @@ public class TimeDepositController {
         return timeDepositService.listAll().stream()
                 .map(TimeDepositController::toDto)
                 .toList();
+    }
+
+    @PostMapping("/balances")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateBalances() {
+        timeDepositService.updateAllBalances();
     }
 
     private static TimeDepositDto toDto(TimeDepositWithWithdrawals depositWithWithdrawals) {

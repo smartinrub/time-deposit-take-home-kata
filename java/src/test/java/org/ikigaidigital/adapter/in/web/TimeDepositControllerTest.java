@@ -17,9 +17,10 @@ import java.util.List;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = TimeDepositController.class)
 class TimeDepositControllerTest {
@@ -59,5 +60,14 @@ class TimeDepositControllerTest {
         mockMvc.perform(get("/time-deposits"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", empty()));
+    }
+
+    @Test
+    void shouldUpdateAllBalancesAndRespondNoContent() throws Exception {
+        mockMvc.perform(post("/time-deposits/balances"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+
+        then(service).should().updateAllBalances();
     }
 }
