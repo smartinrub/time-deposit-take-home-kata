@@ -5,3 +5,8 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
+springdoc:
+  swagger-ui:
+    # contract-first: Swagger UI shows the hand-written contract, not one generated from the code
+    url: /openapi.yaml
