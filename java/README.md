@@ -84,12 +84,12 @@ Example deposit from `GET /time-deposits` after one `POST`:
 ### Tools and setup
 
 - **Claude Code** (Anthropic's CLI coding agent) with the **Claude Opus 5.5** model, run from this `java/` folder throughout the exercise.
-- All configuration is in the repository, so the setup is reproducible: install Claude Code, run `claude` in `java/`, and the rules, hook and skills below load automatically. The integration tests need Docker.
+- All configuration is in the repository, so the setup is reproducible: install Claude Code, run `claude` in `java/`, and the rules, hook and skills below load automatically. The hook needs `jq` and Maven on the `PATH`; the integration tests need Docker.
 
 | File | Purpose |
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | Project rules the agent follows. |
-| [`.claude/settings.json`](.claude/settings.json) | Permissions. |
+| [`.claude/settings.json`](.claude/settings.json) | Permissions (`mvn` and read-only `git` allowed, `git push` denied) and a hook that runs `mvn -q test` after every `.java`/`pom.xml` edit, reporting failures back to the agent. |
 | [`.claude/skills/mutation-check`](.claude/skills/mutation-check/SKILL.md) | `/mutation-check`: applies small deliberate bugs to production code one at a time and reports any the tests miss. |
 | [`.claude/skills/pre-commit-review`](.claude/skills/pre-commit-review/SKILL.md) | `/pre-commit-review`: checks uncommitted changes against `CLAUDE.md`, runs `mvn verify` and proposes commit splits and messages. |
 

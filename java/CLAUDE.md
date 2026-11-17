@@ -16,7 +16,7 @@ The assignment is in `../README.md`. Assumptions are justified in short code com
 - `org.ikigaidigital.domain`: plain Java only, with no Spring, JPA or Jackson annotations. Holds the models, interest policies and calculator.
 - `org.ikigaidigital.application`: use cases and ports (interfaces). Depends only on the domain.
 - `org.ikigaidigital.adapter.in.web`: `@RestController`s whose mappings match the OpenAPI contract exactly, returning the DTOs generated from it (contract-first).
-- `org.ikigaidigital.adapter.out.persistence`: JPA entities, Spring Data repositories and the port implementation. Maps entities to domain objects and back.
+- `org.ikigaidigital.adapter.out.persistence`: JPA entities, Spring Data repositories and the port implementations (one adapter per port). Maps entities to domain objects and back.
 - Dependencies point inwards: adapters → application → domain, never the other way.
 - Don't add abstractions without a clear current need. No speculative interfaces, factories or layers.
 
@@ -25,7 +25,7 @@ The assignment is in `../README.md`. Assumptions are justified in short code com
 - Java 25 (LTS), Spring Boot 4, Maven.
 - PostgreSQL, Spring Data JPA, Flyway migrations (schema in `db/migration`; dev-only sample data in `db/seed`, loaded by the `dev` profile).
 - OpenAPI contract in `src/main/resources/static/openapi.yaml` is the source of truth. `openapi-generator-maven-plugin` generates only the `*Dto` models into `org.ikigaidigital.adapter.in.web.api.model` (never edit generated code; change the contract). Paths and status codes are written by hand in the controllers, so the web tests must check them against the contract. Swagger UI (springdoc) serves the contract file as-is.
-- Tests: JUnit 5, AssertJ, Testcontainers (PostgreSQL) for integration tests.
+- Tests: JUnit 5, AssertJ, Mockito (at port boundaries), Testcontainers (PostgreSQL) for integration tests.
 
 ## Workflow
 
@@ -54,5 +54,5 @@ The assignment is in `../README.md`. Assumptions are justified in short code com
 ## Commands
 
 - Build and test everything: `mvn verify`
-- Unit tests only: `mvn test`
-- Run the app: `mvn spring-boot:run` (needs a running PostgreSQL; see `README.md`)
+- Tests without the coverage report: `mvn test`
+- Run the app: `mvn spring-boot:run -Dspring-boot.run.profiles=dev` (needs Docker; PostgreSQL starts from `compose.yaml`; see `README.md`)

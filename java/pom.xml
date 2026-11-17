@@ -100,7 +100,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- contract-first: API interfaces and DTOs are generated from the OpenAPI contract -->
+            <!-- contract-first: DTOs are generated from the OpenAPI contract -->
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -121,10 +121,8 @@
                             <configOptions>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
-                                <!-- plain DTOs: the original contract is served as-is to Swagger UI -->
                                 <documentationProvider>none</documentationProvider>
                                 <annotationLibrary>none</annotationLibrary>
-                                <!-- input validation is out of scope (see README) -->
                                 <useBeanValidation>false</useBeanValidation>
                                 <openApiNullable>false</openApiNullable>
                             </configOptions>
