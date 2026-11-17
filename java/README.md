@@ -18,6 +18,68 @@ Stopping a `dev` run removes its database (`docker compose down -v`), so sample 
 - **IntelliJ:** the shared run configuration `TimeDepositApplication` (in `.run/`) already has the `dev` profile active.
 - **Reset the local database** (e.g. after editing a migration that was already applied): `docker compose down -v`
 
+### Running the tests
+
+```bash
+mvn verify
+```
+
+Runs the unit, web, persistence and end-to-end tests. The persistence and end-to-end tests start PostgreSQL with Testcontainers, so Docker must be running. The coverage summary is printed at the end of the build, and the full report is in `target/site/jacoco/index.html`.
+
+## Using the API (Swagger)
+
+The contract is [`src/main/resources/static/openapi.yaml`](src/main/resources/static/openapi.yaml). With the app running:
+
+| | URL |
+|---|---|
+| Swagger UI | http://localhost:8080/swagger-ui/index.html |
+| OpenAPI contract | http://localhost:8080/openapi.yaml |
+
+### From Swagger UI
+
+1. Start the app with sample data: `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+2. Open http://localhost:8080/swagger-ui/index.html. Both endpoints are listed under **TimeDeposits**.
+3. **`GET /time-deposits`** → **Try it out** → **Execute**. Returns every deposit with its withdrawals (`200`).
+4. **`POST /time-deposits/balances`** → **Try it out** → **Execute**. Applies one month of interest to every deposit (`204`, no body).
+5. Run **`GET /time-deposits`** again to see the new balances.
+
+### From the command line
+
+```bash
+curl http://localhost:8080/time-deposits
+curl -i -X POST http://localhost:8080/time-deposits/balances
+```
+
+### What to expect with the sample data
+
+One `POST` changes the balances as follows. Each plan has a deposit on both sides of its interest boundary:
+
+| id | plan | days | balance before | after one POST | why |
+|---|---|---|---|---|---|
+| 1 | basic | 30 | 10000.00 | 10000.00 | no interest during the first 30 days |
+| 2 | basic | 45 | 1234567.00 | 1235595.81 | 1% / 12 = +1028.81 |
+| 3 | student | 200 | 5000.00 | 5012.50 | 3% / 12 = +12.50 |
+| 4 | student | 366 | 5000.00 | 5000.00 | no interest after one year |
+| 5 | premium | 45 | 20000.00 | 20000.00 | premium interest starts after 45 days |
+| 6 | premium | 46 | 20000.00 | 20083.33 | 5% / 12 = +83.33 |
+
+Example deposit from `GET /time-deposits` after one `POST`:
+
+```json
+{
+  "id": 2,
+  "planType": "basic",
+  "balance": 1235595.81,
+  "days": 45,
+  "withdrawals": [
+    { "id": 1, "amount": 500.00, "date": "2026-01-15" },
+    { "id": 2, "amount": 250.50, "date": "2026-02-10" }
+  ]
+}
+```
+
+`POST` is not idempotent: every call adds another month of interest. Restart the app to get the original sample data back, because stopping a `dev` run removes its database.
+
 ## Assumptions
 
 The assignment leaves some points open. Instead of blocking on clarification, the following assumptions were made.
