@@ -38,6 +38,12 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 - Only commit when the user asks, and never push without being asked.
 - For an ambiguous requirement, make a reasonable assumption, record it in `README.md` under *Assumptions*, and add a code comment where relevant. Don't stop to ask.
 
+## Harness (`.claude/`)
+
+- `settings.json`: allows `mvn` and read-only `git`, denies `git push`. A PostToolUse hook runs `mvn -q test` after every edit to a `.java` file or `pom.xml` and reports failures back immediately.
+- `/mutation-check`: applies small deliberate bugs to production code to confirm the tests catch them. Run it after adding tests or refactoring.
+- `/pre-commit-review`: checks uncommitted changes against these rules, runs `mvn verify` and proposes commit splits and messages.
+
 ## Code style
 
 - Match the surrounding code. Prefer clarity over cleverness.
