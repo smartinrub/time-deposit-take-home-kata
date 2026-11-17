@@ -1,5 +1,22 @@
 # Time Deposit Kata - Java Solution
 
+## Running locally
+
+Requirements: Java 25 and a running Docker daemon (Docker Desktop). Run the commands from this `java/` folder.
+
+```bash
+# with sample data (dev profile): one deposit per plan on each side of its interest boundaries
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+# empty database (schema only)
+mvn spring-boot:run
+```
+
+Spring Boot starts PostgreSQL from `compose.yaml` automatically and applies the Flyway migrations on startup.
+
+- **IntelliJ:** the shared run configuration `TimeDepositApplication` (in `.run/`) already has the `dev` profile active.
+- **Reset the local database** (e.g. after editing a migration that was already applied): `docker compose down -v`
+
 ## Assumptions
 
 The assignment leaves some points open. Instead of blocking on clarification, the following assumptions were made.
@@ -32,5 +49,9 @@ The assignment leaves some points open. Instead of blocking on clarification, th
 
 ### Persistence
 
-13. **The table and column names follow the README** (`timeDeposits`, `withdrawals`, `timeDepositId`, ...), mapped to the database's naming conventions where needed.
-14. **The balance update runs in a single transaction**: either every deposit is updated or none is.
+13. **Table and column names are the README's names in snake_case** (`timeDeposits` → `time_deposits`, `planType` → `plan_type`, `timeDepositId` → `time_deposit_id`). Postgres folds unquoted identifiers to lowercase, so camelCase would either silently become `timedeposits` or require quoting every identifier. snake_case is the Postgres convention and Hibernate's default mapping.
+14. **IDs are plain `INTEGER` primary keys without auto-generation.** No endpoint creates deposits or withdrawals, so nothing needs generated IDs.
+15. **Money columns are `NUMERIC(19, 2)`** (cents). Interest is already rounded to cents and the sample balances are whole cents, so storing two decimals loses nothing. It also drops floating-point noise from the `Double` balance (e.g. `6.029999999999999` is stored as `6.03`).
+16. **`plan_type` has no check constraint**, because unknown plan types are valid and earn no interest (assumption 4).
+17. **Sample data is dev-only.** There is no create endpoint, so local runs need data, but production migrations (`db/migration`) contain only schema. The seed (`db/seed/R__seed_time_deposits.sql`) loads only with the `dev` profile, which must be activated explicitly (see [Running locally](#running-locally)). It covers each plan on both sides of its interest boundaries. It is a repeatable migration, so it can never clash with a future versioned schema migration, and `ON CONFLICT DO NOTHING` makes re-runs keep existing rows.
+18. **The balance update runs in a single transaction**: either every deposit is updated or none is.

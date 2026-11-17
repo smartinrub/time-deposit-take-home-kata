@@ -1,0 +1,4 @@
+spring:
+  flyway:
+    # schema migrations plus dev-only sample data
+    locations: classpath:db/migration,classpath:db/seed
