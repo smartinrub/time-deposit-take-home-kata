@@ -1,11 +1,11 @@
 # CLAUDE.md
 
 Project rules for AI-assisted work on the Time Deposit refactoring kata (Java solution).
-The assignment is in `../README.md`. Assumptions are in `README.md`, and new ones go there too.
+The assignment is in `../README.md`. Assumptions are justified in short code comments where they are implemented.
 
 ## Hard constraints (never break these)
 
-- `TimeDeposit` is shared: do not change its constructor, getters or setters without explicit approval. It lives in `org.ikigaidigital.domain`; see assumption 7 in `README.md` for why it moved.
+- `TimeDeposit` is shared: do not change its constructor, getters or setters without explicit approval. It lives in `org.ikigaidigital.domain`; its public API must stay unchanged.
 - Do not change the signature of `TimeDepositCalculator.updateBalance(List<TimeDeposit>)`.
 - `updateBalance` behaviour must stay exactly as it is, including the boundaries (`days > 30`, student `days < 366`, premium `days > 45`) and rounding (only the interest is rounded, 2 decimals, `HALF_UP`, via `new BigDecimal(double)`).
 - Build **exactly two** REST endpoints: `GET /time-deposits` and `POST /time-deposits/balances`. No others.
@@ -36,7 +36,7 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 - Refactor commits must not change test expectations. Keep refactors and features in separate commits.
 - Use atomic Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `build:`, `docs:`, `chore:`). Each commit compiles and passes tests on its own.
 - Only commit when the user asks, and never push without being asked.
-- For an ambiguous requirement, make a reasonable assumption, record it in `README.md` under *Assumptions*, and add a code comment where relevant. Don't stop to ask.
+- For an ambiguous requirement, make a reasonable assumption and justify it in a short code comment where it is implemented. Don't stop to ask.
 
 ## Harness (`.claude/`)
 

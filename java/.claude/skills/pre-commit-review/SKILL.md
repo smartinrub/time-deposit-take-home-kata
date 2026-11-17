@@ -7,7 +7,7 @@ description: Review the uncommitted changes against the project rules in CLAUDE.
 
 ## Steps
 
-1. Read `CLAUDE.md` and `README.md` (assumptions) so the rules are current.
+1. Read `CLAUDE.md` so the rules are current.
 2. Collect the changes: `git status --short`, `git diff`, `git diff --cached`; read any new untracked files in full.
 3. Check every change against these rules and report each violation with `file:line`:
    - **Shared class**: `TimeDeposit` constructor, getters and setters unchanged; `updateBalance(List<TimeDeposit>)` signature unchanged.
@@ -16,7 +16,7 @@ description: Review the uncommitted changes against the project rules in CLAUDE.
    - **Architecture**: no Spring, JPA or Jackson imports in `org.ikigaidigital.domain`; adapters depend on application/domain, never the reverse.
    - **Quality**: no dead code, unused imports or dependencies, commented-out code, or speculative abstractions.
    - **Tests**: new behaviour has a test; names follow `should<Expected>When<Condition>`; assertions check outcomes, not interactions.
-   - **Docs**: new assumptions recorded in `README.md`; `CLAUDE.md` still matches the code.
+   - **Docs**: new assumptions justified in a short code comment where implemented; `CLAUDE.md` still matches the code.
 4. Run `mvn verify` and include the test count and the coverage summary.
 
 ## Report

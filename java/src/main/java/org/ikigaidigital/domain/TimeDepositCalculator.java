@@ -8,6 +8,7 @@ import java.util.Map;
 public class TimeDepositCalculator {
 
     private static final int INTEREST_FREE_DAYS = 30;
+    // plan types are case-sensitive: unknown ones (e.g. "BASIC", "gold") earn no interest, as in the original code
     private static final InterestPolicy NO_INTEREST = deposit -> 0;
 
     private final Map<String, InterestPolicy> policiesByPlanType = Map.of(

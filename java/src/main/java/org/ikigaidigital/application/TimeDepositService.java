@@ -39,6 +39,8 @@ public class TimeDepositService {
                 .toList();
     }
 
+    // One transaction: every balance is updated or none is.
+    // Assuming requests do not need to be idempotent
     @Transactional
     public void updateAllBalances() {
         List<TimeDeposit> deposits = timeDepositRepository.findAll();
