@@ -19,6 +19,13 @@ class TimeDepositEntity {
     protected TimeDepositEntity() {
     }
 
+    TimeDepositEntity(Integer id, String planType, Integer days, BigDecimal balance) {
+        this.id = id;
+        this.planType = planType;
+        this.days = days;
+        this.balance = balance;
+    }
+
     Integer getId() {
         return id;
     }

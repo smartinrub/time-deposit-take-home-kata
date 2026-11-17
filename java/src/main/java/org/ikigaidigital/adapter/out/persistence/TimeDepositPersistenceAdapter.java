@@ -5,6 +5,8 @@ import org.ikigaidigital.domain.TimeDeposit;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Component
@@ -25,8 +27,9 @@ class TimeDepositPersistenceAdapter implements TimeDepositRepository {
 
     @Override
     public void saveAll(List<TimeDeposit> deposits) {
-        // TODO: implement persistence layer
-        throw new UnsupportedOperationException("Saving time deposits is not implemented yet");
+        jpaRepository.saveAll(deposits.stream()
+                .map(TimeDepositPersistenceAdapter::toEntity)
+                .toList());
     }
 
     private static TimeDeposit toDomain(TimeDepositEntity entity) {
@@ -35,6 +38,16 @@ class TimeDepositPersistenceAdapter implements TimeDepositRepository {
                 entity.getPlanType(),
                 entity.getBalance().doubleValue(),
                 entity.getDays()
+        );
+    }
+
+    private static TimeDepositEntity toEntity(TimeDeposit deposit) {
+        return new TimeDepositEntity(
+                deposit.getId(),
+                deposit.getPlanType(),
+                deposit.getDays(),
+                // stored in cents (NUMERIC(19, 2)); rounded here explicitly rather than silently by the database
+                BigDecimal.valueOf(deposit.getBalance()).setScale(2, RoundingMode.HALF_UP)
         );
     }
 }

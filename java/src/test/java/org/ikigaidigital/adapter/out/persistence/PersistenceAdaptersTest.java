@@ -1,5 +1,6 @@
 package org.ikigaidigital.adapter.out.persistence;
 
+import jakarta.persistence.EntityManager;
 import org.ikigaidigital.PostgresTestcontainersConfiguration;
 import org.ikigaidigital.domain.TimeDeposit;
 import org.ikigaidigital.domain.Withdrawal;
@@ -30,6 +31,9 @@ class PersistenceAdaptersTest {
     @Autowired
     private WithdrawalPersistenceAdapter withdrawalAdapter;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @Test
     void shouldLoadAllTimeDepositsOrderedById() {
         assertThat(timeDepositAdapter.findAll())
@@ -48,5 +52,19 @@ class PersistenceAdaptersTest {
                 new Withdrawal(10, 1, new BigDecimal("100.25"), LocalDate.of(2026, 1, 15)),
                 new Withdrawal(11, 1, new BigDecimal("50.50"), LocalDate.of(2026, 2, 10))
         );
+    }
+
+    @Test
+    void shouldSaveBalancesRoundedToCentsAndLeaveOtherDepositsUnchanged() {
+        timeDepositAdapter.saveAll(List.of(new TimeDeposit(1, "basic", 1234.565, 45)));
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(timeDepositAdapter.findAll())
+                .extracting(TimeDeposit::getId, TimeDeposit::getBalance)
+                .containsExactly(
+                        tuple(1, 1234.57),
+                        tuple(2, 2000.75)
+                );
     }
 }

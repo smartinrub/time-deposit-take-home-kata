@@ -19,7 +19,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 @AutoConfigureTestRestTemplate
 @Import(PostgresTestcontainersConfiguration.class)
 @Sql(statements = {
-        "INSERT INTO time_deposits (id, plan_type, days, balance) VALUES (1, 'basic', 45, 1234.56), (2, 'premium', 60, 2000.75)",
+        "INSERT INTO time_deposits (id, plan_type, days, balance) VALUES (1, 'basic', 45, 1234.56), (2, 'premium', 60, 2000.75), (3, 'student', 366, 5000.00)",
         "INSERT INTO withdrawals (id, time_deposit_id, amount, date) VALUES (10, 1, 100.25, '2026-01-15'), (11, 1, 50.50, '2026-02-10')"
 })
 @Sql(statements = {"DELETE FROM withdrawals", "DELETE FROM time_deposits"}, executionPhase = AFTER_TEST_METHOD)
@@ -42,8 +42,24 @@ class TimeDepositsEndToEndTest {
                       { "id": 11, "amount": 50.50, "date": "2026-02-10" }
                     ]
                   },
-                  { "id": 2, "planType": "premium", "balance": 2000.75, "days": 60, "withdrawals": [] }
+                  { "id": 2, "planType": "premium", "balance": 2000.75, "days": 60, "withdrawals": [] },
+                  { "id": 3, "planType": "student", "balance": 5000.0, "days": 366, "withdrawals": [] }
                 ]
                 """, response.getBody(), JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void shouldApplyOneMonthOfInterestToEveryDepositAndPersistIt() throws Exception {
+        ResponseEntity<Void> update = restTemplate.postForEntity("/time-deposits/balances", null, Void.class);
+
+        assertThat(update.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        ResponseEntity<String> deposits = restTemplate.getForEntity("/time-deposits", String.class);
+        JSONAssert.assertEquals("""
+                [
+                  { "id": 1, "balance": 1235.59 },
+                  { "id": 2, "balance": 2009.09 },
+                  { "id": 3, "balance": 5000.0 }
+                ]
+                """, deposits.getBody(), JSONCompareMode.LENIENT);
     }
 }
