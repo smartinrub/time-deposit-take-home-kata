@@ -15,7 +15,7 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 
 - `org.ikigaidigital.domain`: plain Java only, with no Spring, JPA or Jackson annotations. Holds the models, interest policies and calculator.
 - `org.ikigaidigital.application`: use cases and ports (interfaces). Depends only on the domain.
-- `org.ikigaidigital.adapter.in.web`: REST controllers that implement interfaces generated from the OpenAPI contract (contract-first).
+- `org.ikigaidigital.adapter.in.web`: `@RestController`s whose mappings match the OpenAPI contract exactly, returning the DTOs generated from it (contract-first).
 - `org.ikigaidigital.adapter.out.persistence`: JPA entities, Spring Data repositories and the port implementation. Maps entities to domain objects and back.
 - Dependencies point inwards: adapters → application → domain, never the other way.
 - Don't add abstractions without a clear current need. No speculative interfaces, factories or layers.
@@ -24,7 +24,7 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 
 - Java 25 (LTS), Spring Boot 4, Maven.
 - PostgreSQL, Spring Data JPA, Flyway migrations (schema in `db/migration`; dev-only sample data in `db/seed`, loaded by the `dev` profile).
-- OpenAPI contract in `src/main/resources/static/openapi.yaml` is the source of truth. `openapi-generator-maven-plugin` generates the API interface and `*Dto` models into `org.ikigaidigital.adapter.in.web.api` (never edit generated code; change the contract). Swagger UI (springdoc) serves the contract file as-is.
+- OpenAPI contract in `src/main/resources/static/openapi.yaml` is the source of truth. `openapi-generator-maven-plugin` generates only the `*Dto` models into `org.ikigaidigital.adapter.in.web.api.model` (never edit generated code; change the contract). Paths and status codes are written by hand in the controllers, so the web tests must check them against the contract. Swagger UI (springdoc) serves the contract file as-is.
 - Tests: JUnit 5, AssertJ, Testcontainers (PostgreSQL) for integration tests.
 
 ## Workflow

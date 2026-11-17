@@ -61,6 +61,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -81,17 +86,15 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <apiPackage>org.ikigaidigital.adapter.in.web.api</apiPackage>
+                            <!-- only the DTOs; controllers declare their own mappings -->
+                            <generateApis>false</generateApis>
+                            <generateSupportingFiles>false</generateSupportingFiles>
                             <modelPackage>org.ikigaidigital.adapter.in.web.api.model</modelPackage>
                             <modelNameSuffix>Dto</modelNameSuffix>
-                            <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
-                                <interfaceOnly>true</interfaceOnly>
-                                <skipDefaultInterface>true</skipDefaultInterface>
-                                <useTags>true</useTags>
-                                <!-- the original contract is served as-is to Swagger UI -->
+                                <!-- plain DTOs: the original contract is served as-is to Swagger UI -->
                                 <documentationProvider>none</documentationProvider>
                                 <annotationLibrary>none</annotationLibrary>
                                 <!-- input validation is out of scope (see README) -->
