@@ -49,13 +49,23 @@ class TimeDepositCalculatorTest {
     }
 
     @Test
-    void shouldRoundInterestHalfUpToTwoDecimals() {
+    void shouldRoundInterestToTwoDecimals() {
         // 1234567.00 * 0.01 / 12 = 1028.8058... -> 1028.81
         TimeDeposit deposit = new TimeDeposit(1, "basic", 1234567.00, 45);
 
         calculator.updateBalance(List.of(deposit));
 
         assertThat(deposit.getBalance()).isEqualTo(1235595.81);
+    }
+
+    @Test
+    void shouldRoundInterestHalfUpWhenExactlyHalfway() {
+        // 150.00 * 0.01 / 12 = 0.125 exactly -> 0.13 (HALF_DOWN and HALF_EVEN would give 0.12)
+        TimeDeposit deposit = new TimeDeposit(1, "basic", 150.00, 31);
+
+        calculator.updateBalance(List.of(deposit));
+
+        assertThat(deposit.getBalance()).isEqualTo(150.13);
     }
 
     @Test
