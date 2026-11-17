@@ -80,6 +80,27 @@ Example deposit from `GET /time-deposits` after one `POST`:
 
 `POST` is not idempotent: every call adds another month of interest. Restart the app to get the original sample data back, because stopping a `dev` run removes its database.
 
+## AI-assisted development
+
+### Tools and setup
+
+- **Claude Code** (Anthropic's CLI coding agent) with the **Claude Opus 5.5** model, run from this `java/` folder throughout the exercise.
+- All configuration is in the repository, so the setup is reproducible: install Claude Code, run `claude` in `java/`, and the rules, hook and skills below load automatically. The integration tests need Docker.
+
+| File | Purpose |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Project rules the agent follows. |
+| [`.claude/settings.json`](.claude/settings.json) | Permissions. |
+| [`.claude/skills/mutation-check`](.claude/skills/mutation-check/SKILL.md) | `/mutation-check`: applies small deliberate bugs to production code one at a time and reports any the tests miss. |
+| [`.claude/skills/pre-commit-review`](.claude/skills/pre-commit-review/SKILL.md) | `/pre-commit-review`: checks uncommitted changes against `CLAUDE.md`, runs `mvn verify` and proposes commit splits and messages. |
+
+### What was AI-assisted, and why
+
+| Area | What the AI did | Why |
+|---|---|---|
+| Analysis | Read the requirements, code and the placeholder test. | Fast, systematic first pass. |
+| Implementation | Propose refactor, adapters, entities, tests, and Flyway/Testcontainers/OpenAPI configuration | Boilerplate and configuration are where an agent saves the most time. |
+
 ## Assumptions
 
 The assignment leaves some points open. Instead of blocking on clarification, the following assumptions were made.
