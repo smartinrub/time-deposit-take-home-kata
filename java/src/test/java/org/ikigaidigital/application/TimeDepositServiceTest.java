@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
 class TimeDepositServiceTest {
@@ -49,5 +50,19 @@ class TimeDepositServiceTest {
         given(withdrawalRepository.findAll()).willReturn(List.of());
 
         assertThat(service.listAll()).isEmpty();
+    }
+
+    @Test
+    void shouldApplyMonthlyInterestToEveryDepositAndSaveThem() {
+        var basic = new TimeDeposit(1, "basic", 1200.00, 31);
+        var studentAfterOneYear = new TimeDeposit(2, "student", 1200.00, 366);
+        var premium = new TimeDeposit(3, "premium", 1200.00, 46);
+        var deposits = List.of(basic, studentAfterOneYear, premium);
+        given(timeDepositRepository.findAll()).willReturn(deposits);
+
+        service.updateAllBalances();
+
+        assertThat(deposits).extracting(TimeDeposit::getBalance).containsExactly(1201.00, 1200.00, 1205.00);
+        then(timeDepositRepository).should().saveAll(deposits);
     }
 }

@@ -3,8 +3,10 @@ package org.ikigaidigital.application;
 import org.ikigaidigital.application.port.TimeDepositRepository;
 import org.ikigaidigital.application.port.WithdrawalRepository;
 import org.ikigaidigital.domain.TimeDeposit;
+import org.ikigaidigital.domain.TimeDepositCalculator;
 import org.ikigaidigital.domain.Withdrawal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,8 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 public class TimeDepositService {
 
+    // stateless domain logic: created here rather than injected
+    private final TimeDepositCalculator calculator = new TimeDepositCalculator();
     private final TimeDepositRepository timeDepositRepository;
     private final WithdrawalRepository withdrawalRepository;
 
@@ -35,9 +39,11 @@ public class TimeDepositService {
                 .toList();
     }
 
+    @Transactional
     public void updateAllBalances() {
-        // TODO: implement service layer; throws rather than silently doing nothing behind a 204
-        throw new UnsupportedOperationException("Updating balances is not implemented yet");
+        List<TimeDeposit> deposits = timeDepositRepository.findAll();
+        calculator.updateBalance(deposits);
+        timeDepositRepository.saveAll(deposits);
     }
 
     private static TimeDepositWithWithdrawals toTimeDepositWithWithdrawals(

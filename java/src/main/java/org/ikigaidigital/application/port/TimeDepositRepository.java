@@ -7,4 +7,6 @@ import java.util.List;
 public interface TimeDepositRepository {
 
     List<TimeDeposit> findAll();
+
+    void saveAll(List<TimeDeposit> deposits);
 }

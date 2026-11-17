@@ -23,6 +23,12 @@ class TimeDepositPersistenceAdapter implements TimeDepositRepository {
                 .toList();
     }
 
+    @Override
+    public void saveAll(List<TimeDeposit> deposits) {
+        // TODO: implement persistence layer
+        throw new UnsupportedOperationException("Saving time deposits is not implemented yet");
+    }
+
     private static TimeDeposit toDomain(TimeDepositEntity entity) {
         return new TimeDeposit(
                 entity.getId(),
