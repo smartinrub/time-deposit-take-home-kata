@@ -15,7 +15,6 @@ mvn spring-boot:run
 Spring Boot starts PostgreSQL from `compose.yaml` automatically and applies the Flyway migrations on startup.
 Stopping a `dev` run removes its database (`docker compose down -v`), so sample data never leaks into a later run without the profile, and each `dev` run starts from fresh sample data.
 
-- **IntelliJ:** the shared run configuration `TimeDepositApplication` (in `.run/`) already has the `dev` profile active.
 - **Reset the local database** (e.g. after editing a migration that was already applied): `docker compose down -v`
 
 ### Running the tests
