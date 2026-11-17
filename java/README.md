@@ -18,7 +18,7 @@ The assignment leaves some points open. Instead of blocking on clarification, th
 
 ### Domain model
 
-7. **`TimeDeposit` stays unchanged** (no new constructor parameters, no removed or renamed members) because it is a shared class. Withdrawals are modelled separately and combined with the deposit only to build the GET response.
+7. **`TimeDeposit`'s public API stays unchanged** (no new constructor parameters, no removed or renamed members) because it is a shared class. "No breaking changes" is read as covering that API and the `updateBalance` signature, not the package. `TimeDeposit`, `TimeDepositCalculator` and the interest policies moved from `org.ikigaidigital` to `org.ikigaidigital.domain` to support the hexagonal layout. External callers, if any, only need to update one import. Java has no type aliases, so the old package name cannot be kept working alongside the new one. Withdrawals are modelled separately and combined with the deposit only to build the GET response.
 8. **`balance` stays a `Double` in the domain**, as in the shared class. The database stores it as `DECIMAL`, and the persistence adapter converts between the two.
 
 ### API

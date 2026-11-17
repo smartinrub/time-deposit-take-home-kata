@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

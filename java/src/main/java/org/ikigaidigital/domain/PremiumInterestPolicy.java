@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 class PremiumInterestPolicy implements InterestPolicy {
 

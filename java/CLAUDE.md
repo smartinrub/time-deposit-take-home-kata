@@ -5,7 +5,7 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 
 ## Hard constraints (never break these)
 
-- `TimeDeposit` is shared: do not change its constructor, getters, setters or package without explicit approval.
+- `TimeDeposit` is shared: do not change its constructor, getters or setters without explicit approval. It lives in `org.ikigaidigital.domain`; see assumption 7 in `README.md` for why it moved.
 - Do not change the signature of `TimeDepositCalculator.updateBalance(List<TimeDeposit>)`.
 - `updateBalance` behaviour must stay exactly as it is, including the boundaries (`days > 30`, student `days < 366`, premium `days > 45`) and rounding (only the interest is rounded, 2 decimals, `HALF_UP`, via `new BigDecimal(double)`).
 - Build **exactly two** REST endpoints: `GET /time-deposits` and `POST /time-deposits/balances`. No others.
@@ -13,10 +13,10 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 
 ## Architecture (hexagonal)
 
-- `domain`: plain Java only, with no Spring, JPA or Jackson annotations. Holds the models, interest policies and calculator.
-- `application`: use cases and ports (interfaces). Depends only on `domain`.
-- `adapter.in.web`: REST controllers that implement interfaces generated from the OpenAPI contract (contract-first).
-- `adapter.out.persistence`: JPA entities, Spring Data repositories and the port implementation. Maps entities to domain objects and back.
+- `org.ikigaidigital.domain`: plain Java only, with no Spring, JPA or Jackson annotations. Holds the models, interest policies and calculator.
+- `org.ikigaidigital.application`: use cases and ports (interfaces). Depends only on the domain.
+- `org.ikigaidigital.adapter.in.web`: REST controllers that implement interfaces generated from the OpenAPI contract (contract-first).
+- `org.ikigaidigital.adapter.out.persistence`: JPA entities, Spring Data repositories and the port implementation. Maps entities to domain objects and back.
 - Dependencies point inwards: adapters → application → domain, never the other way.
 - Don't add abstractions without a clear current need. No speculative interfaces, factories or layers.
 

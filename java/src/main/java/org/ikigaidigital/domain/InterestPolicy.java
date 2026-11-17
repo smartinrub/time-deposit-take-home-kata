@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.domain;
 
 /**
  * Plan-specific interest rule. Adding a plan type means adding an implementation
