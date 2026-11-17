@@ -32,7 +32,7 @@ The assignment is in `../README.md`. Assumptions are in `README.md`, and new one
 - Work in small steps. Run `mvn verify` after each change; the build must be green before every commit.
 - Write tests first: characterization tests before refactoring, and a failing test before each new behaviour.
 - Test behaviour and outcomes, not interactions. Avoid mocks unless a port boundary needs one. Test boundaries explicitly (e.g. 30/31, 45/46, 365/366 days).
-- Use descriptive test names in the style `should_<expected>_when_<condition>`.
+- Use descriptive test names in the style camelCase `should<Expected>When<Condition>` (e.g. `shouldNotApplyInterestWhenPlanTypeIsUnknown`).
 - Refactor commits must not change test expectations. Keep refactors and features in separate commits.
 - Use atomic Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `build:`, `docs:`, `chore:`). Each commit compiles and passes tests on its own.
 - Only commit when the user asks, and never push without being asked.
